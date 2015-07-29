@@ -1,4 +1,4 @@
-package weico.client;
+package weico.server;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import weico.client.ClientFrame;
 import weico.exception.MessageException;
 
 public class ProcessMsgThread extends Thread {

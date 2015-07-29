@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import weico.client.ClientFrame;
-import weico.client.ProcessMsgThread;
 
 public class Server {
 	private ClientFrame clientFrame;
