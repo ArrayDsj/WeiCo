@@ -3,12 +3,15 @@ package weico.client;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.Set;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -24,6 +27,27 @@ public class ClientJpanel extends JPanel {
 	private String		ipAddressTmp;
 	private String		ip;
 	private JComboBox	ipAddressList;
+
+	// 自动消息回复
+	private JTextField	backMessage;
+	// 复选框
+	private JCheckBox	backMessageCheckBox;
+
+	public JTextField getBackMessage() {
+		return backMessage;
+	}
+
+	public void setBackMessage(JTextField backMessage) {
+		this.backMessage = backMessage;
+	}
+
+	public JCheckBox getBackMessageCheckBox() {
+		return backMessageCheckBox;
+	}
+
+	public void setBackMessageCheckBox(JCheckBox backMessageCheckBox) {
+		this.backMessageCheckBox = backMessageCheckBox;
+	}
 
 	public String getIp() {
 		return ip;
@@ -93,14 +117,20 @@ public class ClientJpanel extends JPanel {
 		}
 		ipAddressList = new JComboBox(studentName);
 		ipAddressList.setBounds(10, 481, 144, 21);
+		// 下拉框不可编辑
+		// ipAddressList.setEditable(true);
 		add(ipAddressList);
+		// 返回当前所选项
+		this.setIp(pro.getProperty((String) ipAddressList.getSelectedItem()));
+		System.out.println("当前IP:" + getIp());
+		// 添加监听器
 		ipAddressList.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				System.out.println((String) ipAddressList.getSelectedItem());
-				String ip = pro
+				String ip = "所选IP:" + pro
 					.getProperty((String) ipAddressList.getSelectedItem());
 				System.out.println(ip);
 				setIp(
@@ -134,25 +164,28 @@ public class ClientJpanel extends JPanel {
 				// 如果输入不为空
 				if (!editorPane.getText().trim().isEmpty()) {
 					// 如果IP地址为空,则默认向自己发送消息
-					// if (ipAddress.getText().isEmpty()) {
+					// if (getIp().trim().isEmpty()) {
 					// ip = "127.0.0.1";
-					// //ipAddressTmp = "127.0.0.1";
+					// // ipAddressTmp = "127.0.0.1";
 					// // 启动客户端
 					// new Client(clientFrame.getClientJpanel());
 					// }
 					// // 如果不为空,且IP格式正确
-					// else if (ipAddress.getText().trim().matches(s)) {
+					// else if (getIp().matches(s)) {
 					//
-					// //ipAddress = ipAddress.getText().trim();
+					// // ipAddress = ipAddress.getText().trim();
 					// ip = (String) ipAddressList.getSelectedItem();
 					// // 启动客户端
 					// new Client(clientFrame.getClientJpanel());
 					// } else
 					// JOptionPane.showMessageDialog(null, "IP地址格式错误");
 
-					new Client(clientFrame.getClientJpanel());
-					// 输出后设置为空
-					editorPane.setText("");
+					// if (getIp().matches(s) && !getIp().trim().isEmpty()) {
+						new Client(clientFrame.getClientJpanel());
+						// 输出后设置为空
+					// editorPane.setText("");
+					// } else
+					// JOptionPane.showMessageDialog(null, "输入的IP地址格式错误!");
 
 				} else {
 					JOptionPane.showMessageDialog(null, "消息输入不能为空");
@@ -192,6 +225,35 @@ public class ClientJpanel extends JPanel {
 		btnNewButton.setMnemonic('L');
 		btnNewButton.setBounds(164, 481, 80, 21);
 		add(btnNewButton);
+
+		// 添加自动消息回复
+		backMessage = new JTextField();
+		backMessage.setBounds(131, 1, 295, 34);
+		backMessage.setText("自动回复");
+		backMessage.setEditable(false);
+		backMessage.setEnabled(false);
+		add(backMessage);
+		backMessage.setColumns(10);
+
+		backMessageCheckBox = new JCheckBox("自动回复");
+		// 默认不选中
+		backMessageCheckBox.setSelected(false);
+		backMessageCheckBox.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				// 如果复选框被选中
+				if (backMessageCheckBox.isSelected()) {
+					backMessage.setEnabled(true);
+					backMessage.setEditable(true);
+				} else {
+					// backMessage.setEditable(false);
+					backMessage.setEnabled(false);
+				}
+			}
+		});
+		backMessageCheckBox.setBounds(0, 6, 104, 29);
+		add(backMessageCheckBox);
+
+
 
 	}
 }

@@ -28,8 +28,7 @@ public class Client {
 			socket = new Socket(clientJpanel.getIp(),
 				9527);
 			bw = new BufferedWriter(
-				new OutputStreamWriter(
-					socket.getOutputStream(), "GBK"));
+				new OutputStreamWriter(socket.getOutputStream(), "GBK"));
 			// 这句是发送给服务器的 控制台输出
 			bw.write(msg);
 			bw.flush();
