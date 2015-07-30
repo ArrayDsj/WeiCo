@@ -26,7 +26,7 @@ public class ProcessMsgThread extends Thread {
 		BufferedReader br = null;
 		try {
 			br = new BufferedReader(
-				new InputStreamReader(socket.getInputStream()));
+				new InputStreamReader(socket.getInputStream(), "GBK"));
 			String msg = br.readLine();
 			// 控制台输出客户端传过来的信息
 			System.out.print("客户端口号:" + socket.getLocalPort() + "\n" +

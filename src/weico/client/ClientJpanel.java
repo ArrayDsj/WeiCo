@@ -100,6 +100,8 @@ public class ClientJpanel extends JPanel {
 				}
 			}
 		});
+		// 快捷键设置
+		sendButton.setMnemonic('S');
 		sendButton.setBounds(494, 481, 80, 23);
 		add(sendButton);
 
@@ -109,6 +111,8 @@ public class ClientJpanel extends JPanel {
 				System.exit(0);
 			}
 		});
+		// 快捷键设置
+		offButton.setMnemonic('C');
 		offButton.setBounds(409, 481, 80, 23);
 		add(offButton);
 
@@ -117,12 +121,13 @@ public class ClientJpanel extends JPanel {
 		add(ipAddress);
 		ipAddress.setColumns(10);
 
-		JButton btnNewButton = new JButton("清屏");
+		JButton btnNewButton = new JButton("清屏(L)");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				messagePane.setText("");
 			}
 		});
+		btnNewButton.setMnemonic('L');
 		btnNewButton.setBounds(164, 481, 80, 21);
 		add(btnNewButton);
 

@@ -27,7 +27,7 @@ public class Client {
 				9527);
 			bw = new BufferedWriter(
 				new OutputStreamWriter(
-					socket.getOutputStream()));
+					socket.getOutputStream(), "GBK"));
 			// 这句是发送给服务器的 控制台输出
 			bw.write(msg);
 			bw.flush();
