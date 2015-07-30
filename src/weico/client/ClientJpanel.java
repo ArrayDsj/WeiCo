@@ -116,7 +116,8 @@ public class ClientJpanel extends JPanel {
 			studentName[i++] = (String) name;
 		}
 		ipAddressList = new JComboBox(studentName);
-		ipAddressList.setBounds(10, 481, 144, 21);
+		ipAddressList.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+		ipAddressList.setBounds(10, 481, 144, 23);
 		// 下拉框不可编辑
 		// ipAddressList.setEditable(true);
 		add(ipAddressList);
@@ -145,17 +146,18 @@ public class ClientJpanel extends JPanel {
 		messagePane = new JTextArea();
 		messagePane.setFont(new Font("微软雅黑", Font.PLAIN, 14));
 		JScrollPane jsp1 = new JScrollPane(messagePane);
-		jsp1.setBounds(0, 83, 584, 288);
+		jsp1.setBounds(0, 83, 578, 288);
 		this.add(jsp1);
 
 		// 输入窗口
 		editorPane = new JTextArea();
 		editorPane.setFont(new Font("微软雅黑", Font.PLAIN, 14));
 		JScrollPane jsp2 = new JScrollPane(editorPane);
-		jsp2.setBounds(0, 399, 584, 72);
+		jsp2.setBounds(0, 399, 578, 72);
 		this.add(jsp2);
 
 		JButton sendButton = new JButton("发送(S)");
+		sendButton.setFont(new Font("微软雅黑", Font.PLAIN, 14));
 		sendButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// 判断输入框是否为空
@@ -183,7 +185,7 @@ public class ClientJpanel extends JPanel {
 					// if (getIp().matches(s) && !getIp().trim().isEmpty()) {
 						new Client(clientFrame.getClientJpanel());
 						// 输出后设置为空
-					// editorPane.setText("");
+					editorPane.setText("");
 					// } else
 					// JOptionPane.showMessageDialog(null, "输入的IP地址格式错误!");
 
@@ -198,6 +200,7 @@ public class ClientJpanel extends JPanel {
 		add(sendButton);
 
 		JButton offButton = new JButton("关闭(C)");
+		offButton.setFont(new Font("微软雅黑", Font.PLAIN, 14));
 		offButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				System.exit(0);
@@ -217,25 +220,28 @@ public class ClientJpanel extends JPanel {
 
 
 		JButton btnNewButton = new JButton("清屏(L)");
+		btnNewButton.setFont(new Font("微软雅黑", Font.PLAIN, 14));
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				messagePane.setText("");
 			}
 		});
 		btnNewButton.setMnemonic('L');
-		btnNewButton.setBounds(164, 481, 80, 21);
+		btnNewButton.setBounds(164, 481, 80, 23);
 		add(btnNewButton);
 
 		// 添加自动消息回复
 		backMessage = new JTextField();
-		backMessage.setBounds(131, 1, 295, 34);
+		backMessage.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+		backMessage.setBounds(121, 4, 295, 34);
 		backMessage.setText("自动回复");
-		backMessage.setEditable(false);
+		// backMessage.setEditable(false);
 		backMessage.setEnabled(false);
 		add(backMessage);
 		backMessage.setColumns(10);
 
 		backMessageCheckBox = new JCheckBox("自动回复");
+		backMessageCheckBox.setFont(new Font("微软雅黑", Font.PLAIN, 14));
 		// 默认不选中
 		backMessageCheckBox.setSelected(false);
 		backMessageCheckBox.addItemListener(new ItemListener() {
@@ -243,15 +249,23 @@ public class ClientJpanel extends JPanel {
 				// 如果复选框被选中
 				if (backMessageCheckBox.isSelected()) {
 					backMessage.setEnabled(true);
-					backMessage.setEditable(true);
+					// backMessage.setEditable(true);
+					sendButton.setEnabled(false);
 				} else {
 					// backMessage.setEditable(false);
 					backMessage.setEnabled(false);
+					sendButton.setEnabled(true);
 				}
 			}
 		});
 		backMessageCheckBox.setBounds(0, 6, 104, 29);
 		add(backMessageCheckBox);
+
+		JButton button = new JButton("消息记录");
+		button.setMnemonic('C');
+		button.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+		button.setBounds(485, 373, 89, 23);
+		add(button);
 
 
 

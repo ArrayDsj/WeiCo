@@ -47,18 +47,44 @@ public class ProcessMsgThread extends Thread {
 					throw new MessageException("异常");
 				} else {
 					String message = "端口:" + socket.getLocalPort() + "\n" +
-							"IP: " + socket.getInetAddress() + "\n" +
+							"IP: " + socket.getInetAddress().getHostAddress()
+							+ "\n" +
 							"时间:" + new SimpleDateFormat("MM月dd日 HH时mm分")
 								.format(new Date())
-							+ "\n" +
-							messageAll[0] + "\n" +
-							"\t" + messageAll[1];
+							+ "\n\n" +
+							messageAll[0] + " --> " +
+							"\t" + messageAll[1] + "\n";
+
 					client.getClientJpanel()
 						.getMessagePane()
-						.setText(message);
+						.append(message);
 				}
 			} catch (MessageException e) {
 				System.out.println("解析失败");
+				if (socket != null) {
+					socket.close();
+				}
+				// 中断线程
+				this.interrupt();
+			}
+
+			// 接收到消息后,判断是否勾选自动回复
+			if (client.getClientJpanel()
+				.getBackMessageCheckBox()
+				.isSelected()) {
+				// 如果被选中了,但是没有编写自动回复的文本
+				if (client.getClientJpanel()
+					.getBackMessage()
+					.getText()
+					.equals("")) {
+					backMessage = "朕后宫佳丽三千,有事憋着,没事退朝";
+				} else {// 有预设消息时
+					backMessage = client.getClientJpanel()
+						.getBackMessage()
+						.getText();
+				}
+				backMessage = "Code.Ai&" + backMessage;
+				backMessage();
 			}
 
 		} catch (IOException e) {
@@ -77,23 +103,6 @@ public class ProcessMsgThread extends Thread {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}
-
-		// 接收到消息后,判断是否勾选自动回复
-		if (client.getClientJpanel().getBackMessageCheckBox().isSelected()) {
-			// 如果被选中了,但是没有编写自动回复的文本
-			if (client.getClientJpanel()
-				.getBackMessage()
-				.getText()
-				.equals("")) {
-				backMessage = "朕后宫佳丽三千,有事憋着,没事赶紧走";
-			} else {
-				backMessage = client.getClientJpanel()
-					.getBackMessage()
-					.getText();
-			}
-			backMessage = "Code.Ai&" + backMessage;
-			backMessage();
 		}
 
 	}
