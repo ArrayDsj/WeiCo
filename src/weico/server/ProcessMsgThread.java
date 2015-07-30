@@ -52,12 +52,18 @@ public class ProcessMsgThread extends Thread {
 							"时间:" + new SimpleDateFormat("MM月dd日 HH时mm分")
 								.format(new Date())
 							+ "\n\n" +
-							messageAll[0] + " --> " +
-							"\t" + messageAll[1] + "\n";
+							messageAll[0] + " --> " + messageAll[1] + "\n";
 
 					client.getClientJpanel()
 						.getMessagePane()
 						.append(message);
+
+					if (client.getClientJpanel()
+						.getBackMessageCheckBox()
+						.isSelected()) {
+						backMessage();
+					}
+
 				}
 			} catch (MessageException e) {
 				System.out.println("解析失败");
@@ -67,26 +73,6 @@ public class ProcessMsgThread extends Thread {
 				// 中断线程
 				this.interrupt();
 			}
-
-			// 接收到消息后,判断是否勾选自动回复
-			if (client.getClientJpanel()
-				.getBackMessageCheckBox()
-				.isSelected()) {
-				// 如果被选中了,但是没有编写自动回复的文本
-				if (client.getClientJpanel()
-					.getBackMessage()
-					.getText()
-					.equals("")) {
-					backMessage = "朕后宫佳丽三千,有事憋着,没事退朝";
-				} else {// 有预设消息时
-					backMessage = client.getClientJpanel()
-						.getBackMessage()
-						.getText();
-				}
-				backMessage = "Code.Ai&" + backMessage;
-				backMessage();
-			}
-
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -108,37 +94,48 @@ public class ProcessMsgThread extends Thread {
 	}
 
 	public void backMessage() {
+		backMessage = client.getClientJpanel()
+			.getBackMessage()
+			.getText();
+		if(client.getClientJpanel()
+				.getBackMessage()
+				.getText().trim()
+				.equals("")){
+			backMessage = "朕后宫佳丽三千,有事憋着,没事退朝";
+		}
+		backMessage = "Code.Ai&" + backMessage;
+		
 		String IP = socket.getInetAddress().getHostAddress();
 		System.out.println(IP);
-		Socket backSocket = null;
-		BufferedWriter bw = null;
-		try {
-			backSocket = new Socket(IP,
-				9527);
-			bw = new BufferedWriter(
-				new OutputStreamWriter(
-					backSocket.getOutputStream(), "GBK"));
-			// 这句是发送给服务器的 控制台输出
-			bw.write(backMessage);
-			bw.flush();
+		if (!IP.equals("127.0.0.1")) {
+			Socket backSocket = null;
+			BufferedWriter bw = null;
+			try {
+				backSocket = new Socket(IP,
+					9527);
+				bw = new BufferedWriter(
+					new OutputStreamWriter(
+						backSocket.getOutputStream(), "GBK"));
+				// 这句是发送给服务器的 控制台输出
+				bw.write(backMessage);
+				bw.flush();
 
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			if (backSocket != null) {
-				try {
-					backSocket.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+			} catch (UnknownHostException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} finally {
+				if (backSocket != null) {
+					try {
+						backSocket.close();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
 		}
-
 	}
-
 }

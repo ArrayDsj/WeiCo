@@ -12,6 +12,14 @@ public class ClientFrame extends JFrame {
 	private JTextArea	messagePane;
 	private ClientJpanel	clientJpanel;
 
+	public Container getContentP() {
+		return contentP;
+	}
+
+	public void setContentP(Container contentP) {
+		this.contentP = contentP;
+	}
+
 	public ClientJpanel getClientJpanel() {
 		return clientJpanel;
 	}
@@ -43,7 +51,7 @@ public class ClientFrame extends JFrame {
 		// 显示窗口
 		this.setVisible(true);
 
-		// 服务器
+		// 打开服务器
 		new Server(this);
 	}
 

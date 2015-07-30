@@ -9,7 +9,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
-import java.util.Set;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -23,8 +22,7 @@ public class ClientJpanel extends JPanel {
 	private ClientFrame clientFrame;
 	private JTextArea	messagePane;
 	private JTextArea	editorPane;
-	private JTextField	ipAddress;
-	private String		ipAddressTmp;
+	// private String ipAddressTmp;
 	private String		ip;
 	private JComboBox	ipAddressList;
 
@@ -57,28 +55,12 @@ public class ClientJpanel extends JPanel {
 		this.ip = ip;
 	}
 
-	public String getIpAddressTmp() {
-		return ipAddressTmp;
-	}
-
-	public void setIpAddressTmp(String ipAddressTmp) {
-		this.ipAddressTmp = ipAddressTmp;
-	}
-
 	public JTextArea getEditorPane() {
 		return editorPane;
 	}
 
 	public void setEditorPane(JTextArea editorPane) {
 		this.editorPane = editorPane;
-	}
-
-	public JTextField getIpAddress() {
-		return ipAddress;
-	}
-
-	public void setIpAddress(JTextField ipAddress) {
-		this.ipAddress = ipAddress;
 	}
 
 	public JTextArea getMessagePane() {
@@ -100,51 +82,36 @@ public class ClientJpanel extends JPanel {
 		try {
 			pro.load(new FileInputStream("J113.properties"));
 		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 
-		// 将键添加到下拉列表中
-		Set nameAll = pro.keySet();
-		int size = nameAll.size();
-		int i = 0;
-		String[] studentName = new String[size];
-		for (Object name : nameAll) {
-			studentName[i++] = (String) name;
-		}
+		Object[] studentName = pro.keySet().toArray();
 		ipAddressList = new JComboBox(studentName);
 		ipAddressList.setFont(new Font("微软雅黑", Font.PLAIN, 14));
 		ipAddressList.setBounds(10, 481, 144, 23);
-		// 下拉框不可编辑
-		// ipAddressList.setEditable(true);
+		// 下拉框可编辑
+		ipAddressList.setEditable(true);
 		add(ipAddressList);
+
 		// 返回当前所选项
 		this.setIp(pro.getProperty((String) ipAddressList.getSelectedItem()));
 		System.out.println("当前IP:" + getIp());
+
 		// 添加监听器
 		ipAddressList.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				System.out.println((String) ipAddressList.getSelectedItem());
-				String ip = "所选IP:" + pro
-					.getProperty((String) ipAddressList.getSelectedItem());
-				System.out.println(ip);
 				setIp(
-					pro.getProperty((String) ipAddressList.getSelectedItem()));
+					pro.getProperty(ipAddressList.getSelectedItem().toString()));
 			}
 		});
 
-		// 取得选中的那个键 然后得到相应的值,设置IP地址为这个值
-
 		// 添加文本域和滚动条
-		// 聊天信息
 		messagePane = new JTextArea();
 		messagePane.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+		messagePane.setEditable(false);
 		JScrollPane jsp1 = new JScrollPane(messagePane);
 		jsp1.setBounds(0, 83, 578, 288);
 		this.add(jsp1);
@@ -159,39 +126,43 @@ public class ClientJpanel extends JPanel {
 		JButton sendButton = new JButton("发送(S)");
 		sendButton.setFont(new Font("微软雅黑", Font.PLAIN, 14));
 		sendButton.addActionListener(new ActionListener() {
+			// 1、取得发送框的输入的内容，如果为空不发送，给出弹出框提示
+			// 2、取得IP地址框中的IP地址，如果为空，默认为127.0.0.1；进行正则表达式验证
+			// 3、构造自定义协议格式的发送信息(名字&信息)
+			// 4、发送
+			// 5、把自己的发送信息回显在自己的文本域(我说：信息)
 			public void actionPerformed(ActionEvent e) {
-				// 判断输入框是否为空
-				// System.out.println(getEditorPane().getText());
-				String s = "(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])";
-				// 如果输入不为空
-				if (!editorPane.getText().trim().isEmpty()) {
-					// 如果IP地址为空,则默认向自己发送消息
-					// if (getIp().trim().isEmpty()) {
-					// ip = "127.0.0.1";
-					// // ipAddressTmp = "127.0.0.1";
-					// // 启动客户端
-					// new Client(clientFrame.getClientJpanel());
-					// }
-					// // 如果不为空,且IP格式正确
-					// else if (getIp().matches(s)) {
-					//
-					// // ipAddress = ipAddress.getText().trim();
-					// ip = (String) ipAddressList.getSelectedItem();
-					// // 启动客户端
-					// new Client(clientFrame.getClientJpanel());
-					// } else
-					// JOptionPane.showMessageDialog(null, "IP地址格式错误");
-
-					// if (getIp().matches(s) && !getIp().trim().isEmpty()) {
-						new Client(clientFrame.getClientJpanel());
-						// 输出后设置为空
-					editorPane.setText("");
-					// } else
-					// JOptionPane.showMessageDialog(null, "输入的IP地址格式错误!");
-
+				String s = "(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])."
+						+ "(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])."
+						+ "(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])."
+						+ "(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])";
+				// 取得输入框字符串
+				String input = editorPane.getText();
+				// 取得下拉列表当前所选中的字符串
+				String inputIP = ipAddressList.getSelectedItem().toString();
+				if (input == null || input.trim().equals("")) {
+					JOptionPane.showMessageDialog(null, "不能发送空消息");
 				} else {
-					JOptionPane.showMessageDialog(null, "消息输入不能为空");
+					// 当输入的IP为空时,默认IP为本地
+					if (inputIP == null || inputIP.equals("")) {
+						setIp("127.0.0.1");
+						new Client(clientFrame.getClientJpanel(), getIp());
+					}
+					// 当输入满足IP地址格式时
+					else if (inputIP.matches(s)) {
+						setIp(inputIP);
+						new Client(clientFrame.getClientJpanel(), getIp());
+					}
+ else if (pro.getProperty(inputIP) != null) {// 说明在列表中有这个人
+						setIp(pro.getProperty(inputIP));
+						new Client(clientFrame.getClientJpanel(), getIp());
+					} else {
+						JOptionPane.showMessageDialog(null,
+							"友情提示&请输入有效的IP地址或在好友列表中选择好友");
+						ipAddressList.setSelectedIndex(0);
+					}
 				}
+				editorPane.setText("");
 			}
 		});
 		// 快捷键设置
@@ -210,14 +181,6 @@ public class ClientJpanel extends JPanel {
 		offButton.setMnemonic('C');
 		offButton.setBounds(409, 481, 80, 23);
 		add(offButton);
-
-		/*//IP地址
-		ipAddress = new JTextField();
-		ipAddress.setBounds(10, 481, 144, 21);
-		add(ipAddress);
-		ipAddress.setColumns(10);*/
-
-
 
 		JButton btnNewButton = new JButton("清屏(L)");
 		btnNewButton.setFont(new Font("微软雅黑", Font.PLAIN, 14));
@@ -266,8 +229,5 @@ public class ClientJpanel extends JPanel {
 		button.setFont(new Font("微软雅黑", Font.PLAIN, 14));
 		button.setBounds(485, 373, 89, 23);
 		add(button);
-
-
-
 	}
 }
