@@ -23,7 +23,9 @@ public class Client {
 		BufferedWriter bw = null;
 
 		try {
-			socket = new Socket(clientJpanel.getIpAddressTmp().trim(),
+			// socket = new Socket(clientJpanel.getIpAddressTmp().trim(),
+			// 9527);
+			socket = new Socket(clientJpanel.getIp(),
 				9527);
 			bw = new BufferedWriter(
 				new OutputStreamWriter(
