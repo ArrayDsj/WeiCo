@@ -23,5 +23,6 @@ public class TestMain {
 		} catch (Exception e) {
 		}
 		new ClientFrame();
+
 	}
 }
