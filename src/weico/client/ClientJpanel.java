@@ -12,6 +12,7 @@ import java.util.Properties;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -152,8 +153,7 @@ public class ClientJpanel extends JPanel {
 					else if (inputIP.matches(s)) {
 						setIp(inputIP);
 						new Client(clientFrame.getClientJpanel(), getIp());
-					}
- else if (pro.getProperty(inputIP) != null) {// 说明在列表中有这个人
+					} else if (pro.getProperty(inputIP) != null) {// 说明在列表中有这个人
 						setIp(pro.getProperty(inputIP));
 						new Client(clientFrame.getClientJpanel(), getIp());
 					} else {
@@ -182,10 +182,13 @@ public class ClientJpanel extends JPanel {
 		offButton.setBounds(409, 481, 80, 23);
 		add(offButton);
 
+		// 清屏的时候向文件中写入消息记录
 		JButton btnNewButton = new JButton("清屏(L)");
 		btnNewButton.setFont(new Font("微软雅黑", Font.PLAIN, 14));
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				MessageHistoryOperation.getInstance()
+					.write(clientFrame.getClientJpanel());
 				messagePane.setText("");
 			}
 		});
@@ -224,10 +227,29 @@ public class ClientJpanel extends JPanel {
 		backMessageCheckBox.setBounds(0, 6, 104, 29);
 		add(backMessageCheckBox);
 
-		JButton button = new JButton("消息记录");
-		button.setMnemonic('C');
-		button.setFont(new Font("微软雅黑", Font.PLAIN, 14));
-		button.setBounds(485, 373, 89, 23);
-		add(button);
+		JButton HistoryButton = new JButton("消息记录");
+		HistoryButton.setMnemonic('C');
+		HistoryButton.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+		HistoryButton.setBounds(485, 373, 89, 23);
+		HistoryButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// 写入信息到文件中
+
+				// 自定义对话框
+				JDialog jdlg = new JDialog(clientFrame, "son", true);
+				jdlg.setLocation(400, 400);
+				jdlg.setSize(200, 200);
+				jdlg.setVisible(true);
+
+				MessageHistoryOperation.getInstance()
+					.write(clientFrame.getClientJpanel());
+				new MessageHistoryJFrame();
+				// 设置主窗体不可用
+
+			}
+		});
+		add(HistoryButton);
 	}
 }

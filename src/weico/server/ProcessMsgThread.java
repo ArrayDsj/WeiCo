@@ -46,18 +46,18 @@ public class ProcessMsgThread extends Thread {
 				if (messageAll.length != 2) {
 					throw new MessageException("异常");
 				} else {
-					String message = "端口:" + socket.getLocalPort() + "\n" +
-							"IP: " + socket.getInetAddress().getHostAddress()
-							+ "\n" +
-							"时间:" + new SimpleDateFormat("MM月dd日 HH时mm分")
+					String message = messageAll[0] + " ("
+							+ socket.getInetAddress().getHostAddress() + ") "
+							+ new SimpleDateFormat("M月d日 HH:mm")
 								.format(new Date())
-							+ "\n\n" +
-							messageAll[0] + " --> " + messageAll[1] + "\n";
+							+ "\n--> " + messageAll[1] + "\n";
 
+					// 把服务端的信息输出到文本域中
 					client.getClientJpanel()
 						.getMessagePane()
 						.append(message);
 
+					// 如果勾选了自动回复,则调用此方法
 					if (client.getClientJpanel()
 						.getBackMessageCheckBox()
 						.isSelected()) {
@@ -77,20 +77,18 @@ public class ProcessMsgThread extends Thread {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			if (br != null) try {
-				br.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			if (socket != null) try {
-				socket.close();
+			try {
+				if (br != null) {
+					br.close();
+				}
+				if (socket != null) {
+					socket.close();
+				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-
 	}
 
 	public void backMessage() {
@@ -107,6 +105,8 @@ public class ProcessMsgThread extends Thread {
 		
 		String IP = socket.getInetAddress().getHostAddress();
 		System.out.println(IP);
+
+		// 防止回复给本机从而导致死循环回复
 		if (!IP.equals("127.0.0.1")) {
 			Socket backSocket = null;
 			BufferedWriter bw = null;

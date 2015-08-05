@@ -3,11 +3,14 @@ package weico.client;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Toolkit;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
 import weico.server.Server;
 
 public class ClientFrame extends JFrame {
+	private ClientFrame		clientFrame;
 	private Container contentP;
 	private JTextArea	messagePane;
 	private ClientJpanel	clientJpanel;
@@ -45,8 +48,24 @@ public class ClientFrame extends JFrame {
 			((int) tk.getScreenSize().getHeight() - 508) / 2);// 设置窗体的位置
 		this.setResizable(false);// 设置窗体尺寸不可更改
 		// this.setIconImage(tk.createImage("img/hp.JPG"));// 设置窗体图标
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+		// this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		// 添加窗口退出事件
+		// 使用适配器
+		this.addWindowListener(new WindowAdapter() {
+
+			@Override
+			public void windowClosing(WindowEvent e) {
+				// TODO Auto-generated method stub
+				MessageHistoryOperation.getInstance()
+					.write(getClientJpanel());
+				System.out.println("test");
+				// 正真退出程序
+				setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+			}
+		});
 		this.addContent();
 		// 显示窗口
 		this.setVisible(true);
