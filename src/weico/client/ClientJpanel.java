@@ -23,6 +23,7 @@ public class ClientJpanel extends JPanel {
 	private ClientFrame clientFrame;
 	private JTextArea	messagePane;
 	private JTextArea	editorPane;
+	int					s;
 	// private String ipAddressTmp;
 	private String		ip;
 	private JComboBox	ipAddressList;
@@ -216,7 +217,7 @@ public class ClientJpanel extends JPanel {
 				if (backMessageCheckBox.isSelected()) {
 					backMessage.setEnabled(true);
 					// backMessage.setEditable(true);
-					sendButton.setEnabled(false);
+					// sendButton.setEnabled(false);
 				} else {
 					// backMessage.setEditable(false);
 					backMessage.setEnabled(false);

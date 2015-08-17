@@ -26,13 +26,24 @@ public class ProcessMsgThread extends Thread {
 	public void run() {
 		// TODO Auto-generated method stub
 		BufferedReader br = null;
+		String messageTmp = null;
+		String onceMessage = "";
 		try {
+			/*InputStreamReader isr = new InputStreamReader(socket.getInputStream());
+			br = new BufferedReader(isr);*/
+			
 			br = new BufferedReader(
 				new InputStreamReader(socket.getInputStream(), "GBK"));
-			String msg = br.readLine();
+			// 循环读取多行信息
+			while ((messageTmp = br.readLine()) != null) {
+				onceMessage += messageTmp + "\n";
+			}
+
 			// 控制台输出客户端传过来的信息
 			System.out.print("客户端口号:" + socket.getLocalPort() + "\n" +
-					"IP地址:" + socket.getInetAddress() + "\n" + "他说: " + msg
+					"IP地址:" + socket.getInetAddress().getHostAddress() + "\n"
+					+ "他说: \n"
+					+ onceMessage
 					+ "\n");
 			// 文本框输出客户端传过来的信息
 			// 谁说的
@@ -42,7 +53,7 @@ public class ProcessMsgThread extends Thread {
 			// 按协议拆分 协议 --> 姓名&说的内容
 
 			try {
-				String[] messageAll = msg.split("&");
+				String[] messageAll = onceMessage.split("&");
 				if (messageAll.length != 2) {
 					throw new MessageException("异常");
 				} else {
@@ -50,7 +61,8 @@ public class ProcessMsgThread extends Thread {
 							+ socket.getInetAddress().getHostAddress() + ") "
 							+ new SimpleDateFormat("M月d日 HH:mm")
 								.format(new Date())
-							+ "\n--> " + messageAll[1] + "\n";
+							+ "\n"
+							+ messageAll[1] + "\n";
 
 					// 把服务端的信息输出到文本域中
 					client.getClientJpanel()
@@ -62,16 +74,26 @@ public class ProcessMsgThread extends Thread {
 						.getBackMessageCheckBox()
 						.isSelected()) {
 						backMessage();
-					}
-
+					} /* else {// 服务端向客户端发送消息
+							// 使用客户端传过来的socket
+						OutputStreamWriter osw = new OutputStreamWriter(
+							socket.getOutputStream());
+						BufferedWriter bw = new BufferedWriter(osw);
+						System.out.println("输入要回复给客户端的信息:\n");
+						String backMessage = new Scanner(System.in).next();
+						bw.write(backMessage);
+						bw.flush();
+						
+						osw.close();
+						bw.close();
+						}*/
 				}
 			} catch (MessageException e) {
 				System.out.println("解析失败");
 				if (socket != null) {
 					socket.close();
 				}
-				// 中断线程
-				this.interrupt();
+
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -88,9 +110,12 @@ public class ProcessMsgThread extends Thread {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			// 中断线程
+			this.interrupt();
 		}
 	}
 
+	// 自动回复方法
 	public void backMessage() {
 		backMessage = client.getClientJpanel()
 			.getBackMessage()
@@ -104,7 +129,7 @@ public class ProcessMsgThread extends Thread {
 		backMessage = "Code.Ai&" + backMessage;
 		
 		String IP = socket.getInetAddress().getHostAddress();
-		System.out.println(IP);
+		// System.out.println(IP);
 
 		// 防止回复给本机从而导致死循环回复
 		if (!IP.equals("127.0.0.1")) {
@@ -116,7 +141,7 @@ public class ProcessMsgThread extends Thread {
 				bw = new BufferedWriter(
 					new OutputStreamWriter(
 						backSocket.getOutputStream(), "GBK"));
-				// 这句是发送给服务器的 控制台输出
+				// 回复客户端
 				bw.write(backMessage);
 				bw.flush();
 
