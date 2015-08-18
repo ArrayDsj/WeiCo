@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component>
+	<exclude-output/>
+	<contentEntry url="file://$MODULE_DIR$"/>
+	<lib name="libquaqua.jnilib" scope="COMPILE">
+		<relative-module-cls project-related="file://$PROJECT_DIR$/lib/libquaqua.jnilib"/>
+	</lib>
+	<lib name="libquaqua64.jnilib" scope="COMPILE">
+		<relative-module-cls project-related="file://$PROJECT_DIR$/lib/libquaqua64.jnilib"/>
+	</lib>
+	<lib name="libquaqua64.dylib" scope="COMPILE">
+		<relative-module-cls project-related="file://$PROJECT_DIR$/lib/libquaqua64.dylib"/>
+	</lib>
+	<lib name="quaqua.jar" scope="COMPILE">
+		<srcroot url="file://D:/java/Quaqua/src"/>
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/lib/quaqua.jar!/"/>
+	</lib>
+	<lib name="swing-layout.jar" scope="COMPILE">
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/lib/swing-layout.jar!/"/>
+	</lib>
+</component>
